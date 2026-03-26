@@ -1,0 +1,17 @@
+# Example workflow for using the THM HTML Badge action
+name: Test THM HTML Badge Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Generate badge
+        uses: ./
+        with:
+          username: 'yeiazel'
+          output_path: 'badge.png'

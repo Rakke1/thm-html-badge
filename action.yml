@@ -1,0 +1,28 @@
+name: 'THM HTML Badge'
+description: 'Generate a TryHackMe HTML badge using thm_badge.py.'
+author: 'Rakke1'
+inputs:
+  username:
+    description: 'TryHackMe username to generate badge for.'
+    required: true
+    default: ''
+  output_path:
+    description: 'Path to save the generated badge image.'
+    required: true
+    default: 'badge.png'
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Generate THM HTML Badge
+      shell: bash
+      run: |
+        python thm_badge.py ${{ inputs.username }} ${{ inputs.output_path }}
