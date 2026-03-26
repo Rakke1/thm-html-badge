@@ -5,6 +5,7 @@ import os
 import requests
 from jinja2 import Template
 from playwright.sync_api import sync_playwright
+from PIL import Image, ImageDraw
 
 BADGE_HTML_TEMPLATE = '''
 <html><head>
@@ -51,7 +52,7 @@ BADGE_HTML_TEMPLATE = '''
     width: 329px;
     height: 88px;
     margin: 0;
-    background: transparent;
+    background: #2e4463;
   }
   #thm-badge {
     width: 327px;
@@ -233,6 +234,15 @@ def html_to_image(html, output_path):
             page.screenshot(path=output_path, clip={"x":0, "y":0, "width":320, "height":88})
         browser.close()
 
+def crop_rounded_corners(image_path, output_path, radius=12):
+    img = Image.open(image_path).convert("RGBA")
+    w, h = img.size
+    mask = Image.new("L", (w, h), 0)
+    draw = ImageDraw.Draw(mask)
+    draw.rounded_rectangle([(0, 0), (w, h)], radius=radius, fill=255)
+    img.putalpha(mask)
+    img.save(output_path)
+
 def main():
     if len(sys.argv) != 3:
         print("Usage: python thm_badge.py <USERNAME> <OUTPUT_PATH>")
@@ -242,7 +252,10 @@ def main():
     data = fetch_thm_profile(username)
     data['level_hex'] = format(data.get('level', 0), 'x')
     html = render_html(data)
-    html_to_image(html, output_path)
+    temp_path = output_path + '.tmp.png'
+    html_to_image(html, temp_path)
+    crop_rounded_corners(temp_path, output_path, radius=12)
+    os.remove(temp_path)
     print(f"Badge image saved to {output_path}")
 
 if __name__ == "__main__":
