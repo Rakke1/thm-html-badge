@@ -26,4 +26,7 @@ runs:
     - name: Generate THM HTML Badge
       shell: bash
       run: |
-        python3 thm_badge.py ${{ inputs.username }} ${{ inputs.output_path }}
+        cd "${GITHUB_ACTION_PATH:-.}"
+          REPO_ROOT="$GITHUB_WORKSPACE"
+          OUTPUT_PATH="$REPO_ROOT/${{ inputs.output_path }}"
+          python3 thm_badge.py "${{ inputs.username }}" "$OUTPUT_PATH"
