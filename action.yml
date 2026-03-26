@@ -23,6 +23,10 @@ runs:
         cd "${GITHUB_ACTION_PATH:-.}"
         python3 -m pip install --upgrade pip
         pip3 install -r requirements.txt
+    - name: Install Playwright browsers
+      shell: bash
+      run: |
+        python3 -m playwright install --with-deps
     - name: Generate THM HTML Badge
       shell: bash
       run: |
